@@ -32,6 +32,11 @@ namespace API.Services
             throw new NotImplementedException();
         }
 
+        public IEnumerable<Product> ListProducts()
+        {
+            return this._dbContext.Products;
+        }
+
         public Product UpdateProduct(string productId)
         {
             throw new NotImplementedException();
