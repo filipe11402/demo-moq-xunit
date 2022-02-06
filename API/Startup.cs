@@ -1,5 +1,5 @@
 using API.Context;
-using API.Extensions;
+using API.Utils;
 using API.Services;
 using API.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -25,10 +25,8 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("ProductsDb"));
-            services.SeedInitialProductsData();
-
             services.AddScoped<IProductRepository, ProductRepository>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

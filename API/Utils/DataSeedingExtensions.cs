@@ -1,19 +1,28 @@
 ﻿using API.Context;
 using API.Models;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 
-namespace API.Extensions
+namespace API.Utils
 {
-    public static class DataSeedingExtensions
+    public class DbContextUtils : IDisposable
     {
-        public static void SeedInitialProductsData(this IServiceCollection services) 
-        {
-            var dbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>().UseInMemoryDatabase("ProductsDb").Options;
+        private readonly SqliteConnection _connection;
 
-            using var dbContext = new ApplicationDbContext(dbContextOptions);
+        private DbContextOptions _dbContextOptions;
+
+        public DbContextUtils()
+        {
+            _connection = new SqliteConnection("Filename=:memory:");
+            _connection.Open();
+
+            _dbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
+                                   .UseSqlite(_connection)
+                                   .Options;
+
+            using var dbContext = new ApplicationDbContext(_dbContextOptions);
 
             dbContext.Products.AddRange(new List<Product>()
             {
@@ -50,9 +59,10 @@ namespace API.Extensions
             });
 
             dbContext.SaveChanges();
-
-            //APPLY LOGIC HERE TO SEED INITIAL DATA
-            //USE USING.DBCONTEXT...
         }
+
+        public ApplicationDbContext CreateContext() { return new ApplicationDbContext(_dbContextOptions); }
+
+        public void Dispose() => _connection.Dispose();
     }
 }
