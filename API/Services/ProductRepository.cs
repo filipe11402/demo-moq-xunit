@@ -4,7 +4,6 @@ using API.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace API.Services
 {
@@ -22,17 +21,22 @@ namespace API.Services
             throw new NotImplementedException();
         }
 
-        public void DeleteProduct(string productId)
+        public void DeleteProduct(int productId)
         {
             throw new NotImplementedException();
         }
 
-        public Product GetProduct(string productId)
+        public Product GetProduct(int productId)
         {
-            throw new NotImplementedException();
+            return this._dbContext.Products.FirstOrDefault(token => token.Id == productId);
         }
 
-        public Product UpdateProduct(string productId)
+        public IEnumerable<Product> ListProducts()
+        {
+            return this._dbContext.Products.AsQueryable();
+        }
+
+        public Product UpdateProduct(int productId)
         {
             throw new NotImplementedException();
         }

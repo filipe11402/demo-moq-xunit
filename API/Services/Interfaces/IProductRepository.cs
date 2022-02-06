@@ -7,11 +7,11 @@ namespace API.Services.Interfaces
     {
         Product AddProduct(Product newProduct);
 
-        Product UpdateProduct(string productId);
+        Product UpdateProduct(int productId);
 
-        void DeleteProduct(string productId);
+        void DeleteProduct(int productId);
 
-        Product GetProduct(string productId);
+        Product GetProduct(int productId);
 
         IEnumerable<Product> ListProducts();
     }
