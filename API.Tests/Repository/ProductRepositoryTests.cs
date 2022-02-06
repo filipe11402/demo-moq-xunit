@@ -1,9 +1,9 @@
 ﻿using API.Context;
 using API.Models;
 using API.Services;
+using API.Services.Interfaces;
 using API.Tests.Extensions;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -15,6 +15,7 @@ namespace API.Tests.Repository
         [Fact]
         public void GetProductList()
         {
+            //Arrange
             var products = new List<Product>()
             {
                 new Product()
@@ -56,14 +57,21 @@ namespace API.Tests.Repository
 
             var productRepository = new ProductRepository(mockContext.Object);
 
+            //Act
             var productList = productRepository.ListProducts();
 
+            //Assert
             Assert.Equal(products, productList);
+            Mock.VerifyAll();
         }
 
-        [Fact]
-        public void GetProductById() 
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void GetProductById(int expected) 
         {
+            //Arrange
             var products = new List<Product>()
             {
                 new Product()
@@ -106,9 +114,12 @@ namespace API.Tests.Repository
 
             var productRepository = new ProductRepository(mockContext.Object);
 
-            var productList = productRepository.GetProduct(1);
+            //Act
+            var actual = productRepository.GetProduct(expected);
 
-            Assert.Equal(1, productList.Id);
+            //Arrange
+            Assert.Equal(expected, actual.Id);
+            Mock.VerifyAll();
         }
     }
 }
