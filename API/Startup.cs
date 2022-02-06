@@ -1,5 +1,4 @@
 using API.Context;
-using API.Utils;
 using API.Services;
 using API.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;

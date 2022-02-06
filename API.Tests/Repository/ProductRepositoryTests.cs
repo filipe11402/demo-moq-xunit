@@ -1,6 +1,11 @@
-﻿using API.Services.Interfaces;
-using API.Utils;
+﻿using API.Context;
+using API.Models;
+using API.Services;
+using API.Tests.Extensions;
 using Moq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace API.Tests.Repository
@@ -10,20 +15,100 @@ namespace API.Tests.Repository
         [Fact]
         public void GetProductList()
         {
-            //Arrange
-            var dbTestHelpers = new DbContextTestHelpers();
-            var mockProductRepository = new Mock<IProductRepository>();
-            var productList = dbTestHelpers.ProductListToTest;
+            var products = new List<Product>()
+            {
+                new Product()
+                {
+                    Id = 1,
+                    Name = "Catnip",
+                    Price = 10
+                },
+                new Product()
+                {
+                    Id = 2,
+                    Name = "Toilet Paper",
+                    Price = 7
+                },
+                new Product()
+                {
+                    Id = 3,
+                    Name = "Meat",
+                    Price = 20
+                },
+                new Product()
+                {
+                    Id = 4,
+                    Name = "Water",
+                    Price = 5
+                },
+                new Product()
+                {
+                    Id = 5,
+                    Name = "Gas Bottle",
+                    Price = 28
+                }
+            }.AsQueryable();
 
-            mockProductRepository.Setup(token => token.ListProducts())
-                                 .Returns(productList);
+            var mockedProducts = products.CreateMockDbSet();
 
-            //Act
-            var products = mockProductRepository.Object.ListProducts();
-            dbTestHelpers.Dispose();
+            var mockContext = new Mock<ApplicationDbContext>();
+            mockContext.Setup(x => x.Products).Returns(mockedProducts.Object);
 
-            //Assert
+            var productRepository = new ProductRepository(mockContext.Object);
+
+            var productList = productRepository.ListProducts();
+
             Assert.Equal(products, productList);
+        }
+
+        [Fact]
+        public void GetProductById() 
+        {
+            var products = new List<Product>()
+            {
+                new Product()
+                {
+                    Id = 1,
+                    Name = "Catnip",
+                    Price = 10
+                },
+                new Product()
+                {
+                    Id = 2,
+                    Name = "Toilet Paper",
+                    Price = 7
+                },
+                new Product()
+                {
+                    Id = 3,
+                    Name = "Meat",
+                    Price = 20
+                },
+                new Product()
+                {
+                    Id = 4,
+                    Name = "Water",
+                    Price = 5
+                },
+                new Product()
+                {
+                    Id = 5,
+                    Name = "Gas Bottle",
+                    Price = 28
+                }
+            }.AsQueryable();
+
+            var mockedProducts = products.CreateMockDbSet();
+
+            var mockContext = new Mock<ApplicationDbContext>();
+            mockContext.Setup(x => x.Products).Returns(mockedProducts.Object);
+            mockContext.Setup(x => x.Products.Find()).Returns(mockedProducts.Object.Find());
+
+            var productRepository = new ProductRepository(mockContext.Object);
+
+            var productList = productRepository.GetProduct(1);
+
+            Assert.Equal(1, productList.Id);
         }
     }
 }
